@@ -100,7 +100,8 @@ export default class App extends Component {
       .get(
         `https://api.thingiverse.com/search/${
           this.state.keyword
-        }?access_token=${process.env.REACT_APP_THINGIVERSE_API_KEY}`
+        }?access_token=${process.env.REACT_APP_THINGIVERSE_API_KEY}`,
+        { crossdomain: true }
       )
       .then(response => this.setState({ searchResults: response.data }))
       .catch(error => console.log(error))
