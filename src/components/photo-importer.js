@@ -59,7 +59,7 @@ const CancelButton = styled.button`
 export default class PhotoImporter extends Component {
   state = {
     path: '',
-    image: '',
+    image: null,
   }
 
   static defaultProps = {
@@ -73,12 +73,18 @@ export default class PhotoImporter extends Component {
     })
   }
 
+  handleClear = () => {
+    this.setState({ path: '' }, () => {
+      this.props.clearAll()
+    })
+  }
+
   handleUpload = image => {
     this.props.onUpload(image)
   }
 
   render() {
-    const { path, image, keyword } = this.state
+    const { path, image } = this.state
     return (
       <Container>
         {path ? (
@@ -87,9 +93,7 @@ export default class PhotoImporter extends Component {
             <UploadPhotoButton onMouseDown={() => this.handleUpload(image)}>
               Upload
             </UploadPhotoButton>
-            <CancelButton onMouseDown={() => this.setState({ path: '' })}>
-              Cancel
-            </CancelButton>
+            <CancelButton onMouseDown={this.handleClear}>Cancel</CancelButton>
           </Fragment>
         ) : (
           <AddPhotoContainer>

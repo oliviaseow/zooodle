@@ -11,7 +11,7 @@ const Container = styled.a`
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
   margin-bottom: 32px;
   height: 160px;
-  width: 400px;
+  max-width: 90vw;
   cursor: pointer;
   text-decoration: none;
 

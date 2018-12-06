@@ -1,11 +1,9 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React, { Component, Fragment } from 'react'
 import styled from 'styled-components'
 import PhotoImporter from './components/photo-importer'
 import axios from 'axios'
-//import cloudVisionCredentials from './cloud-vision.json'
-import ModelViewer from './components/3d-model-viewer'
 import ThingiverseCard from './components/thingiverse-card'
+import Header from './components/header'
 
 const requestTemplate = path => ({
   requests: [
@@ -25,6 +23,9 @@ const requestTemplate = path => ({
 
 const Container = styled.div`
   display: flex;
+  position: absolute;
+  top: 80px;
+  flex-direction: column;
   min-height: 100vh;
   width: 100%;
   justify-content: center;
@@ -57,6 +58,13 @@ export default class App extends Component {
 
   onUpload = image => {
     this.readImage(image)
+  }
+
+  clearAll = () => {
+    this.setState({
+      searchResults: [],
+      keyword: '',
+    })
   }
 
   readImage = imageFile => {
@@ -111,26 +119,31 @@ export default class App extends Component {
   render() {
     const { searchResults, keyword } = this.state
     return (
-      <Container>
-        <PhotoContainer>
-          <PhotoImporter onUpload={this.onUpload} />
-          {keyword && <Keyword>{`Zooodle recognizes your ${keyword}`}</Keyword>}
-        </PhotoContainer>
-        {searchResults && (
-          <CardCollection>
-            {searchResults
-              .slice(0, 3)
-              .map(({ name, thumbnail, public_url }) => (
-                <ThingiverseCard
-                  key={name}
-                  name={name}
-                  url={thumbnail}
-                  link={public_url}
-                />
-              ))}
-          </CardCollection>
-        )}
-      </Container>
+      <Fragment>
+        <Header />
+        <Container>
+          <PhotoContainer>
+            <PhotoImporter onUpload={this.onUpload} clearAll={this.clearAll} />
+            {keyword && (
+              <Keyword>{`Zooodle recognizes your ${keyword}`}</Keyword>
+            )}
+          </PhotoContainer>
+          {searchResults && (
+            <CardCollection>
+              {searchResults
+                .slice(0, 3)
+                .map(({ name, thumbnail, public_url }) => (
+                  <ThingiverseCard
+                    key={name}
+                    name={name}
+                    url={thumbnail}
+                    link={public_url}
+                  />
+                ))}
+            </CardCollection>
+          )}
+        </Container>
+      </Fragment>
     )
   }
 }
