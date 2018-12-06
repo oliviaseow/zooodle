@@ -70,7 +70,7 @@ export default class App extends Component {
     //   .catch(error => console.log(error))
     axios
       .get(
-        `https://api.thingiverse.com/files/744827?access_token=${'62cdb21d2b2b842088ac694a25058a55'}`
+        `https://api.thingiverse.com/files/22655?access_token=${'62cdb21d2b2b842088ac694a25058a55'}`
       )
       .then(response => console.log(response))
       .catch(error => console.log(error))

@@ -47,15 +47,15 @@ class ModelViewer extends Component {
   }
 
   load = () => {
-    this.loader = new THREE.FileLoader()
-    this.loader.load(
-      'https://cdn.thingiverse.com/threejs_json/dc/86/77/a8/13/7d3a115emsgkeychainv2_20140828-20295-6cfdyt-0.js',
+    const renderToScene = this.addToRenderer
+    const loader = new THREE.ObjectLoader()
+    // loader.setResponseType('json')
+    loader.load(
+      'https://cdn.thingiverse.com/threejs_json/04/8e/20/de/95/0489bf0eHD2.js',
       function(data) {
-        // output the text to the console
-        const model = new THREE.Mesh(
-          JSON.parse(data),
-          new THREE.MeshBasicMaterial()
-        )
+        // const model = new THREE.Mesh(data, new THREE.MeshBasicMaterial())
+        // console.log(model)
+        renderToScene(data)
       },
 
       // onProgress callback
@@ -69,6 +69,10 @@ class ModelViewer extends Component {
       }
     )
     console.log(this.loader)
+  }
+
+  addToRenderer = geom => {
+    this.scene.add(geom)
   }
 
   renderScene = () => {
