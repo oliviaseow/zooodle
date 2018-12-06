@@ -18,6 +18,7 @@ const InputLabel = styled.label`
   padding: 8px;
   color: white;
   background: blue;
+  cursor: pointer;
 `
 
 const ImagePreview = styled.img`
@@ -42,6 +43,7 @@ const UploadPhotoButton = styled.button`
   color: white;
   padding: 8px;
   margin-top: 8px;
+  cursor: pointer;
 `
 
 const CancelButton = styled.button`
@@ -51,12 +53,13 @@ const CancelButton = styled.button`
   color: blue;
   padding: 8px;
   margin-top: 8px;
+  cursor: pointer;
 `
 
 export default class PhotoImporter extends Component {
   state = {
     path: '',
-    image: '',
+    image: null,
   }
 
   static defaultProps = {
@@ -67,6 +70,12 @@ export default class PhotoImporter extends Component {
     this.setState({
       path: URL.createObjectURL(event.target.files[0]),
       image: event.target.files[0],
+    })
+  }
+
+  handleClear = () => {
+    this.setState({ path: '' }, () => {
+      this.props.clearAll()
     })
   }
 
@@ -84,9 +93,7 @@ export default class PhotoImporter extends Component {
             <UploadPhotoButton onMouseDown={() => this.handleUpload(image)}>
               Upload
             </UploadPhotoButton>
-            <CancelButton onMouseDown={() => this.setState({ path: '' })}>
-              Cancel
-            </CancelButton>
+            <CancelButton onMouseDown={this.handleClear}>Cancel</CancelButton>
           </Fragment>
         ) : (
           <AddPhotoContainer>

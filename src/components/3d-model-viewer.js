@@ -20,8 +20,12 @@ class ModelViewer extends Component {
     //ADD CUBE
     const geometry = new THREE.BoxGeometry(1, 1, 1)
     const material = new THREE.MeshBasicMaterial({ color: '#433F81' })
+    this.cube = new THREE.Mesh(geometry, material)
+    // this.scene.add(this.cube)
+
     //this.cube = new THREE.Mesh(geometry, material)
     //this.scene.add(this.cube)
+
 
     //load url
 
@@ -112,16 +116,13 @@ class ModelViewer extends Component {
       },
 
       // onProgress callback
-      function(xhr) {
-        console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
-      },
+      function(xhr) {},
 
       // onError callback
       function(err) {
         console.error('An error happened')
       }
     )
-    console.log(this.loader)
   }
 
   addToRenderer = geom => {
