@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import PhotoImporter from './components/photo-importer'
 import axios from 'axios'
-import image2base64 from 'image-to-base64'
-import cloudVisionCredentials from './cloud-vision.json'
+//import cloudVisionCredentials from './cloud-vision.json'
 import ModelViewer from './components/3d-model-viewer'
 
 const requestTemplate = path => ({
@@ -24,15 +23,12 @@ const requestTemplate = path => ({
 })
 
 const readImage = imageFile => {
-  // axios
-  //   .post(
-  //     `https://vision.googleapis.com/v1/images:annotate?key=${'AIzaSyDFh9lBFoXxoYBdZ6iQwo2hRw213qPHeAQ'}`,
-  //     requestTemplate(image)
-  //   )
-  //   .then(res => console.log(res))
-  //   .catch(err => console.log(err))
 
-  image2base64(imageFile).then(response => {
+  let reader = new FileReader()
+  reader.readAsDataURL(imageFile)
+  
+  reader.onload = () => {
+    let response = reader.result.split(',')[1]
     console.log({ response })
     axios
       .post(
@@ -41,7 +37,8 @@ const readImage = imageFile => {
       )
       .then(res => console.log(res))
       .catch(err => console.log(err))
-  })
+  }
+
 }
 
 const Container = styled.div`
