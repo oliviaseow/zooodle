@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react'
 import styled from 'styled-components'
-import fs from 'fs'
 
 const Container = styled.div`
   display: flex;
@@ -57,6 +56,7 @@ const CancelButton = styled.button`
 export default class PhotoImporter extends Component {
   state = {
     path: '',
+    image: '',
   }
 
   static defaultProps = {
@@ -66,21 +66,22 @@ export default class PhotoImporter extends Component {
   handleChange = event => {
     this.setState({
       path: URL.createObjectURL(event.target.files[0]),
+      image: event.target.files[0],
     })
   }
 
-  handleUpload = path => {
-    this.props.onUpload(path)
+  handleUpload = image => {
+    this.props.onUpload(image)
   }
 
   render() {
-    const { path } = this.state
+    const { path, image } = this.state
     return (
       <Container>
         {path ? (
           <Fragment>
             <ImagePreview src={path} />
-            <UploadPhotoButton onMouseDown={() => this.handleUpload(path)}>
+            <UploadPhotoButton onMouseDown={() => this.handleUpload(image)}>
               Upload
             </UploadPhotoButton>
             <CancelButton onMouseDown={() => this.setState({ path: '' })}>
