@@ -18,6 +18,7 @@ const InputLabel = styled.label`
   padding: 8px;
   color: white;
   background: blue;
+  cursor: pointer;
 `
 
 const ImagePreview = styled.img`
@@ -42,6 +43,7 @@ const UploadPhotoButton = styled.button`
   color: white;
   padding: 8px;
   margin-top: 8px;
+  cursor: pointer;
 `
 
 const CancelButton = styled.button`
@@ -51,6 +53,7 @@ const CancelButton = styled.button`
   color: blue;
   padding: 8px;
   margin-top: 8px;
+  cursor: pointer;
 `
 
 export default class PhotoImporter extends Component {
@@ -75,7 +78,7 @@ export default class PhotoImporter extends Component {
   }
 
   render() {
-    const { path, image } = this.state
+    const { path, image, keyword } = this.state
     return (
       <Container>
         {path ? (

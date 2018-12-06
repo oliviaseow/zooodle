@@ -5,6 +5,7 @@ import PhotoImporter from './components/photo-importer'
 import axios from 'axios'
 //import cloudVisionCredentials from './cloud-vision.json'
 import ModelViewer from './components/3d-model-viewer'
+import ThingiverseCard from './components/thingiverse-card'
 
 const requestTemplate = path => ({
   requests: [
@@ -22,65 +23,113 @@ const requestTemplate = path => ({
   ],
 })
 
-const readImage = imageFile => {
-
-  let reader = new FileReader()
-  reader.readAsDataURL(imageFile)
-  
-  reader.onload = () => {
-    let response = reader.result.split(',')[1]
-    console.log({ response })
-    axios
-      .post(
-        `https://vision.googleapis.com/v1/images:annotate?key=${'AIzaSyDFh9lBFoXxoYBdZ6iQwo2hRw213qPHeAQ'}`,
-        requestTemplate(response)
-      )
-      .then(res => console.log(res))
-      .catch(err => console.log(err))
-  }
-
-}
-
 const Container = styled.div`
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   justify-content: center;
   align-items: center;
+  background: lightgray;
+`
+
+const CardCollection = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const PhotoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 48px;
+`
+
+const Keyword = styled.h2`
+  margin: 16px 0;
 `
 
 export default class App extends Component {
   state = {
-    image: null,
+    searchResults: [],
+    keyword: '',
   }
 
   onUpload = image => {
-    readImage(image)
+    this.readImage(image)
+  }
+
+  readImage = imageFile => {
+    let reader = new FileReader()
+    reader.readAsDataURL(imageFile)
+
+    reader.onload = () => {
+      let response = reader.result.split(',')[1]
+      console.log({ response })
+      axios
+        .post(
+          `https://vision.googleapis.com/v1/images:annotate?key=${
+            process.env.REACT_APP_GOOGLE_API_KEY
+          }`,
+          requestTemplate(response)
+        )
+        .then(res =>
+          this.setState(
+            {
+              keyword: res.data.responses[0].labelAnnotations[0].description,
+            },
+            () => {
+              this.handleRequest()
+            }
+          )
+        )
+        .catch(err => console.log(err))
+    }
   }
 
   handleRequest = () => {
+    axios
+      .get(
+        `https://api.thingiverse.com/search/${
+          this.state.keyword
+        }?access_token=${process.env.REACT_APP_THINGIVERSE_API_KEY}`
+      )
+      .then(response => this.setState({ searchResults: response.data }))
+      .catch(error => console.log(error))
     // axios
     //   .get(
-    //     `https://api.thingiverse.com/search/dogs?access_token=${'62cdb21d2b2b842088ac694a25058a55'}`
+    //     `https://api.thingiverse.com/files/22655?access_token=${
+    //       process.env.REACT_APP_THINGIVERSE_API_KEY
+    //     }`
     //   )
     //   .then(response => console.log(response))
     //   .catch(error => console.log(error))
-    axios
-      .get(
-        `https://api.thingiverse.com/files/22655?access_token=${'62cdb21d2b2b842088ac694a25058a55'}`
-      )
-      .then(response => console.log(response))
-      .catch(error => console.log(error))
   }
 
   componentDidMount() {}
 
   render() {
+    const { searchResults, keyword } = this.state
     return (
       <Container>
-        <PhotoImporter onUpload={this.onUpload} />
-        <button onMouseDown={this.handleRequest}>request</button>
-        <ModelViewer />
+        <PhotoContainer>
+          <PhotoImporter onUpload={this.onUpload} />
+          {keyword && <Keyword>{`Zooodle recognizes your ${keyword}`}</Keyword>}
+        </PhotoContainer>
+        {searchResults && (
+          <CardCollection>
+            {searchResults
+              .slice(0, 3)
+              .map(({ name, thumbnail, public_url }) => (
+                <ThingiverseCard
+                  key={name}
+                  name={name}
+                  url={thumbnail}
+                  link={public_url}
+                />
+              ))}
+          </CardCollection>
+        )}
       </Container>
     )
   }
