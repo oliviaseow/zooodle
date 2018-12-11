@@ -4,6 +4,8 @@ import PhotoImporter from './components/photo-importer'
 import axios from 'axios'
 import ThingiverseCard from './components/thingiverse-card'
 import Header from './components/header'
+import AnimalCard from './components/animal-card'
+import firebase from './firebase'
 
 const requestTemplate = path => ({
   requests: [
@@ -50,10 +52,15 @@ const Keyword = styled.h2`
   margin: 16px 0;
 `
 
+const Info = styled.h4`
+  margin: 8px 0;
+`
+
 export default class App extends Component {
   state = {
     searchResults: [],
     keyword: '',
+    animals: [],
   }
 
   onUpload = image => {
@@ -115,10 +122,28 @@ export default class App extends Component {
     //   .catch(error => console.log(error))
   }
 
-  componentDidMount() {}
+  getAnimalFromKeyword = () => {
+    const { animals, keyword } = this.state
+    if (animals.length > 1) {
+      return animals.find(({ animal }) => animal === keyword)
+    }
+    return null
+  }
+
+  componentDidMount() {
+    this.firebaseRef = firebase.database().ref('/')
+    this.firebaseCallback = this.firebaseRef.on('value', snap => {
+      this.setState({ animals: snap.val() })
+    })
+  }
+
+  componentWillUnmount() {
+    this.firebaseRef.off('value', this.firebaseCallback)
+  }
 
   render() {
     const { searchResults, keyword } = this.state
+    const animal = this.getAnimalFromKeyword()
     return (
       <Fragment>
         <Header />
@@ -128,6 +153,7 @@ export default class App extends Component {
             {keyword && (
               <Keyword>{`Zooodle recognizes your ${keyword}`}</Keyword>
             )}
+            {animal && <AnimalCard {...animal} />}
           </PhotoContainer>
           {searchResults && (
             <CardCollection>

@@ -22,7 +22,7 @@ const Title = styled.h2`
 
 const Header = () => (
   <Container>
-    <Title>zoodle</Title>
+    <Title>zooodle</Title>
   </Container>
 )
 
